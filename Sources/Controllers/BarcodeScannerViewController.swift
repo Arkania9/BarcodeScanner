@@ -47,6 +47,8 @@ open class BarcodeScannerViewController: UIViewController {
     /// and waits for the next reset action.
     public var isOneTimeSearch = true
     
+    private var capturedCodes: [String] = []
+    
     /// `AVCaptureMetadataOutput` metadata object types.
     public var metadata = AVMetadataObject.ObjectType.barcodeScannerMetadata {
         didSet {
@@ -157,11 +159,9 @@ open class BarcodeScannerViewController: UIViewController {
             expandedConstraints.deactivate()
             collapsedConstraints.activate()
         } else {
-            //      collapsedConstraints.deactivate()
-            //      expandedConstraints.activate()
+            collapsedConstraints.deactivate()
+            expandedConstraints.activate()
         }
-        
-        messageViewController.status = newValue
         
         UIView.animate(
             withDuration: duration,
@@ -185,30 +185,6 @@ open class BarcodeScannerViewController: UIViewController {
         } else {
             cameraViewController.stopCapturing()
         }
-    }
-    
-    // MARK: - Animations
-    
-    /**
-     Simulates flash animation.
-     - Parameter processing: Flag to set the current state to `.processing`.
-     */
-    private func animateFlash(whenProcessing: Bool = false) {
-        let flashView = UIView(frame: view.bounds)
-        flashView.backgroundColor = UIColor.white
-        flashView.alpha = 1
-        
-        view.addSubview(flashView)
-        view.bringSubviewToFront(flashView)
-        
-        UIView.animate(
-            withDuration: 0.2,
-            animations: ({
-                flashView.alpha = 0.0
-            }),
-            completion: ({ _ in
-                flashView.removeFromSuperview()
-            }))
     }
 }
 
@@ -325,9 +301,6 @@ extension BarcodeScannerViewController: CameraViewControllerDelegate {
             code = String(code.dropFirst())
             rawType = AVMetadataObject.ObjectType.upca.rawValue
         }
-        
-        status = Status(state: .processing)
         codeDelegate?.scanner(self, didCaptureCode: code, type: rawType)
-        animateFlash(whenProcessing: isOneTimeSearch)
     }
 }
