@@ -47,9 +47,7 @@ open class BarcodeScannerViewController: UIViewController {
     /// and waits for the next reset action.
     public var isOneTimeSearch = true
     
-    private var capturedCodes: [String] = []
-    
-    /// `AVCaptureMetadataOutput` metadata object types.
+    /// `AVCaptureMetadataOutput`  metadata object types.
     public var metadata = AVMetadataObject.ObjectType.barcodeScannerMetadata {
         didSet {
             cameraViewController.metadata = metadata
